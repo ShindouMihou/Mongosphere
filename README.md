@@ -19,6 +19,14 @@ You can easily install this library from Central Maven:
 implementation 'pw.mihou:Mongosphere:1.0.0'
 ```
 
+## 🤔 Wiki?
+Please read our wiki for a more detailed explanation of many of the things here from creating the models to inserting a model and fetching a model from the database, here is a little table of contents in proper order of what you should read first.
+- [Annotations](https://github.com/ShindouMihou/Mongosphere/wiki/Annotations)
+- [Creating Models](https://github.com/ShindouMihou/Mongosphere/wiki/Creating-Models)
+- [Creating Mongosphere](https://github.com/ShindouMihou/Mongosphere/wiki/Creating-Mongosphere)
+- [Inserting Models with Mongosphere](https://github.com/ShindouMihou/Mongosphere/wiki/Inserting-and-Updating-Models-with-Mongosphere)
+- [Fetching Models with Mongosphere](https://github.com/ShindouMihou/Mongosphere/wiki/Fetching-Models-with-Mongosphere)
+
 ## 💬 Usage
 A very simple example of Mongosphere usage is can be seen below, please read our wiki for a more detailed
 introduction over Mongosphere like what to do if Mongosphere cannot detect a constructor or cannot parse a type, etc.
