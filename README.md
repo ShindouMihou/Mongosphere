@@ -59,25 +59,6 @@ public class TestModel {
 }
 ```
 
-You may notice that we are using several annotations and here is the explanation for each of those annotations:
-- **@MongoItem**: This is an annotation that helps the library identify which value to fill with, it can be used as
-an annotation for variables and parameters. If used in a parameter, it tells the library to fill the parameter with the correct value from the database,
-if used in a variable, it tells the library to fill that variable with the annotation.
-- **@MongoConstructor**: This tells the library to use this constructor for constructing the object.
-
-A few things to note, if there is a constructor that Mongosphere can use then it will only leave the filling of the variables to the constructor, which 
-means instead of setting the variables, it will instead fill the constructor's parameters and leave the assignment to the constructor.
-
-```
-No constructor:
-variableA, variableB, variableC will be filled up by Mongosphere.
-
-Constructor that has variableA as a parameter:
-Mongosphere will hand the value of variableA to the constructor's parameter and no longer move from there, to avoid 
-interferring with whatever the constructor is doing (in other words, prevent variable overriding).
-```
-
-After the model is set, you can easily do the following:
 ```java
 import com.mongodb.ConnectionString;
 import pw.mihou.mongosphere.Mongosphere;
