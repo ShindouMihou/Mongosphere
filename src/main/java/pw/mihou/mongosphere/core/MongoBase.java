@@ -9,7 +9,6 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.ReplaceOptions;
-import com.mongodb.client.model.UpdateOptions;
 import com.mongodb.client.model.Updates;
 import org.bson.Document;
 import org.bson.conversions.Bson;
@@ -124,9 +123,9 @@ public class MongoBase {
              * Retrieves a list of all the documents that matches the specified filters
              * and transforms them to their respective classes.
              *
-             * @param clazz The class to transform.
+             * @param clazz   The class to transform.
              * @param filters The filters to use.
-             * @param <T> The type to transform into.
+             * @param <T>     The type to transform into.
              * @return A list of the specified type.
              */
             public <T> List<T> find(Class<T> clazz, Bson... filters) {
@@ -140,9 +139,9 @@ public class MongoBase {
              * Retrieves the first document that matches the specified filters
              * and transforms it into the specified class.
              *
-             * @param clazz The class to transform.
+             * @param clazz   The class to transform.
              * @param filters The filters to use.
-             * @param <T> the type to transform into.
+             * @param <T>     the type to transform into.
              * @return A list of the specified type.
              */
             public <T> T findFirst(Class<T> clazz, Bson... filters) {
@@ -153,9 +152,9 @@ public class MongoBase {
              * Retrieves the first document that matches the key-value on the document.
              *
              * @param clazz The class to transform.
-             * @param key The key to search for.
+             * @param key   The key to search for.
              * @param value The value the key must have.
-             * @param <T> The type to transform into.
+             * @param <T>   The type to transform into.
              * @return A list of the specified type.
              */
             public <T> T findWhere(Class<T> clazz, String key, Object value) {
@@ -166,9 +165,9 @@ public class MongoBase {
              * Retrieves all the documents that matches the key-value on the document.
              *
              * @param clazz The class to transform.
-             * @param key The key to search for.
+             * @param key   The key to search for.
              * @param value The value the key must have.
-             * @param <T> The type to transform into.
+             * @param <T>   The type to transform into.
              * @return A list of the specified type.
              */
             public <T> List<T> findAllWhere(Class<T> clazz, String key, Object value) {
@@ -179,9 +178,9 @@ public class MongoBase {
              * Performs a customized find where the only job of {@link Mongosphere} would be to cast
              * the {@link Document} to the specified class.
              *
-             * @param clazz The class to transform into.
+             * @param clazz  The class to transform into.
              * @param method The method to fetch the document.
-             * @param <T> The type to transform into.
+             * @param <T>    The type to transform into.
              * @return A new instance of the class.
              */
             public <T> T find(Class<T> clazz, Function<MongoCollection<Document>, Document> method) {
@@ -192,7 +191,7 @@ public class MongoBase {
              * Inserts or updates the object stored in the database, if the identifier in the object exists
              * on the database then it will update that document else inserts it.
              *
-             * @param object The object to insert.
+             * @param object     The object to insert.
              * @param identifier The identifier to find.
              */
             public void insertOrReplace(Object object, String identifier) {
@@ -214,7 +213,7 @@ public class MongoBase {
             /**
              * Inserts many objects to the database or updates them if they match the identifier filter.
              *
-             * @param objects The objects to insert.
+             * @param objects    The objects to insert.
              * @param identifier The identifier filter.
              */
             public void insertOrReplaceMany(List<?> objects, String identifier) {
@@ -226,8 +225,8 @@ public class MongoBase {
             /**
              * Updates a single field instead of an entire document that matches the specified.
              *
-             * @param object The object to gather data from.
-             * @param field The field to match.
+             * @param object     The object to gather data from.
+             * @param field      The field to match.
              * @param identifier The identifier to match.
              */
             public void updateField(Object object, String field, String identifier) {
@@ -239,8 +238,8 @@ public class MongoBase {
             /**
              * Updates a single field instead of an entire document that matches the specified.
              *
-             * @param object The objects to gather data from.
-             * @param fields The field to match.
+             * @param object     The objects to gather data from.
+             * @param fields     The field to match.
              * @param identifier The identifier to match.
              */
             public void updateFields(Object object, List<String> fields, String identifier) {
@@ -272,7 +271,7 @@ public class MongoBase {
              * Deletes many documents that matches the key-value.
              *
              * @param identifier The identifier to match.
-             * @param value The value required for a document to qualify in deletion.
+             * @param value      The value required for a document to qualify in deletion.
              */
             public void deleteMany(String identifier, Object value) {
                 collection.deleteMany(Filters.eq(identifier, value));
@@ -291,7 +290,7 @@ public class MongoBase {
              * Deletes one document that matches the key-value.
              *
              * @param identifier The identifier to match.
-             * @param value The value required for a document to qualify in deletion.
+             * @param value      The value required for a document to qualify in deletion.
              */
             public void deleteOne(String identifier, Object value) {
                 collection.deleteOne(Filters.eq(identifier, value));
@@ -301,7 +300,7 @@ public class MongoBase {
              * Finds if a document matching the following arguments exists.
              *
              * @param identifier The identifier to search for.
-             * @param value The value to match against.
+             * @param value      The value to match against.
              * @return Does a document matching exists?
              */
             public boolean has(String identifier, Object value) {
@@ -361,21 +360,21 @@ public class MongoBase {
                                             Class<?> a = field.getType();
 
                                             // We want to check for a type adapter first.
-                                            if (Mongosphere.hasAdapter(clazz)) {
-                                                field.set(t, Mongosphere.getAdapter(clazz).from(document));
+                                            if (Mongosphere.hasAdapter(a)) {
+                                                field.set(t, Mongosphere.getAdapter(a).from(document));
                                             } else {
                                                 try {
                                                     if (a.equals(Boolean.class) || a.equals(boolean.class))
                                                         field.setBoolean(t, document.getBoolean(key));
                                                     else if (a.equals(Integer.class) || a.equals(int.class))
                                                         field.setInt(t, document.getInteger(key));
-                                                    else if(a.equals(Long.class) || a.equals(long.class))
+                                                    else if (a.equals(Long.class) || a.equals(long.class))
                                                         field.setLong(t, document.getLong(key));
-                                                    else if(a.equals(Character.class) || a.equals(char.class))
+                                                    else if (a.equals(Character.class) || a.equals(char.class))
                                                         field.setChar(t, document.get(key, Character.class));
-                                                    else if(a.equals(String.class))
+                                                    else if (a.equals(String.class))
                                                         field.set(t, document.getString(key));
-                                                    else if(a.equals(Double.class) || a.equals(double.class))
+                                                    else if (a.equals(Double.class) || a.equals(double.class))
                                                         field.set(t, document.getDouble(key));
                                                     else
                                                         field.set(t, document.get(key, a));
@@ -406,7 +405,7 @@ public class MongoBase {
                                                         key = parameter.isAnnotationPresent(MongoItem.class) ?
                                                                 parameter.getAnnotation(MongoItem.class).key() : parameter.getName();
                                                     } else {
-                                                        if(parameter.isAnnotationPresent(MongoItem.class)) {
+                                                        if (parameter.isAnnotationPresent(MongoItem.class)) {
                                                             key = parameter.getAnnotation(MongoItem.class).key();
                                                         } else {
                                                             throw new IllegalStateException("A constructor parameter must be annotated with MongoItem for Mongosphere to use!");
@@ -415,7 +414,7 @@ public class MongoBase {
 
                                                     return document.containsKey(key);
                                                 }))
-                                        .findFirst().orElseThrow(() -> new IllegalStateException("No constructor for " +  clazz.getName() +
+                                        .findFirst().orElseThrow(() -> new IllegalStateException("No constructor for " + clazz.getName() +
                                                 " is useable by Mongosphere!")));
 
                         constructor.setAccessible(true);
@@ -426,7 +425,7 @@ public class MongoBase {
                                         key = parameter.isAnnotationPresent(MongoItem.class) ?
                                                 parameter.getAnnotation(MongoItem.class).key() : parameter.getName();
                                     } else {
-                                        if(parameter.isAnnotationPresent(MongoItem.class)) {
+                                        if (parameter.isAnnotationPresent(MongoItem.class)) {
                                             key = parameter.getAnnotation(MongoItem.class).key();
                                         } else {
                                             throw new IllegalStateException("A constructor parameter must be annotated with MongoItem for Mongosphere to use!");
@@ -435,26 +434,30 @@ public class MongoBase {
 
                                     Class<?> a = parameter.getType();
 
-                                    // This is overpowered.
                                     try {
-                                        if (a.equals(Boolean.class) || a.equals(boolean.class))
-                                            return document.getBoolean(key);
-                                        else if (a.equals(Integer.class) || a.equals(int.class))
-                                            return document.getInteger(key);
-                                        else if(a.equals(Long.class) || a.equals(long.class))
-                                            return document.getLong(key);
-                                        else if(a.equals(Character.class) || a.equals(char.class))
-                                            return document.get(key, Character.class);
-                                        else if(a.equals(String.class))
-                                            return document.getString(key);
-                                        else if(a.equals(Double.class) || a.equals(double.class))
-                                            return document.getDouble(key);
-                                        else
-                                            return document.get(key, a);
+                                        if (Mongosphere.hasAdapter(a)) {
+                                            return Mongosphere.getAdapter(a).from(document);
+                                        } else {
+                                            // This is overpowered.
+                                            if (a.equals(Boolean.class) || a.equals(boolean.class))
+                                                return document.getBoolean(key);
+                                            else if (a.equals(Integer.class) || a.equals(int.class))
+                                                return document.getInteger(key);
+                                            else if (a.equals(Long.class) || a.equals(long.class))
+                                                return document.getLong(key);
+                                            else if (a.equals(Character.class) || a.equals(char.class))
+                                                return document.get(key, Character.class);
+                                            else if (a.equals(String.class))
+                                                return document.getString(key);
+                                            else if (a.equals(Double.class) || a.equals(double.class))
+                                                return document.getDouble(key);
+                                            else
+                                                return document.get(key, a);
+                                        }
 
                                     } catch (ClassCastException e) {
                                         e.printStackTrace();
-                                        throw new IllegalStateException("Construction of " + clazz.getName() +" failed: Paramter with key " + key +
+                                        throw new IllegalStateException("Construction of " + clazz.getName() + " failed: Paramter with key " + key +
                                                 " cannot be transformed, please register a TypeAdapter.");
                                     }
                                 }).toArray());
