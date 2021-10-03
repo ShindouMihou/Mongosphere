@@ -339,6 +339,11 @@ public class MongoBase {
             }
 
             private <T> T fromDocument(Class<T> clazz, Document document) {
+
+                if (document == null) {
+                    return null;
+                }
+
                 try {
 
                     T t;
