@@ -8,7 +8,7 @@
     <artifactId>Mongosphere</artifactId>
     <name>Mongosphere</name>
     <description>Mongosphere is a wrapper around MongoDB Driver Sync that aims to lessen the code written by the developers.</description>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
     <url>https://github.com/ShindouMihou/Mongosphere/</url>
     <developers>
         <developer>

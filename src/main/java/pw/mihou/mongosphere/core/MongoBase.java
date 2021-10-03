@@ -278,6 +278,23 @@ public class MongoBase {
             }
 
             /**
+             * Retrieves all the documents stored in the database and
+             * converts them into the type before passing them into a List.
+             *
+             * @param clazz The class to convert the models into.
+             * @param <T> The type of the class.
+             * @return A new List containing all the models that were converted.
+             */
+            public <T> List<T> all(Class<T> clazz) {
+                List<T> list = new ArrayList<>();
+                collection.find()
+                        .map(document -> fromDocument(clazz, document))
+                        .forEach(list::add);
+
+                return list;
+            }
+
+            /**
              * Deletes one document that matches the filters.
              *
              * @param filters The filters to match.

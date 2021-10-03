@@ -10,13 +10,13 @@ You can easily install this library from Central Maven:
 <dependency>
   <groupId>pw.mihou</groupId>
   <artifactId>Mongosphere</artifactId>
-  <version>1.0.2</version>
+  <version>1.0.3</version>
 </dependency>
 ```
 
 ### Gradle
 ```groovy
-implementation 'pw.mihou:Mongosphere:1.0.2'
+implementation 'pw.mihou:Mongosphere:1.0.3'
 ```
 
 ## 📖 READ THE WIKI!
