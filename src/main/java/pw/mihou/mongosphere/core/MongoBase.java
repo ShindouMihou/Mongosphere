@@ -10,6 +10,10 @@ import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.ReplaceOptions;
 import com.mongodb.client.model.Updates;
+import com.mongodb.client.result.DeleteResult;
+import com.mongodb.client.result.InsertManyResult;
+import com.mongodb.client.result.InsertOneResult;
+import com.mongodb.client.result.UpdateResult;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import pw.mihou.mongosphere.Mongosphere;
@@ -193,10 +197,11 @@ public class MongoBase {
              *
              * @param object     The object to insert.
              * @param identifier The identifier to find.
+             * @return The {@link UpdateResult} from the database.
              */
-            public void insertOrReplace(Object object, String identifier) {
+            public UpdateResult insertOrReplace(Object object, String identifier) {
                 Document document = fromObject(object);
-                collection.replaceOne(Filters.eq(identifier, document.get(identifier)), document, new ReplaceOptions().upsert(true));
+                return collection.replaceOne(Filters.eq(identifier, document.get(identifier)), document, new ReplaceOptions().upsert(true));
             }
 
             /**
@@ -205,9 +210,10 @@ public class MongoBase {
              * all of them.
              *
              * @param objects The objects to insert.
+             * @return The {@link InsertManyResult} from the database.
              */
-            public void insertMany(List<?> objects) {
-                collection.insertMany(objects.stream().map(o -> fromObject(objects)).collect(Collectors.toList()));
+            public InsertManyResult insertMany(List<?> objects) {
+                return collection.insertMany(objects.stream().map(o -> fromObject(objects)).collect(Collectors.toList()));
             }
 
             /**
@@ -215,11 +221,14 @@ public class MongoBase {
              *
              * @param objects    The objects to insert.
              * @param identifier The identifier filter.
+             * @return All the {@link UpdateResult} from the database.
              */
-            public void insertOrReplaceMany(List<?> objects, String identifier) {
+            public List<UpdateResult> insertOrReplaceMany(List<?> objects, String identifier) {
                 // I actually was thinking of doing updateMany but that would cause an error
                 // if there are no documents, so I decided to go with this. Please improve if possible.
-                objects.forEach(o -> insertOrReplace(o, identifier));
+                return objects.stream()
+                        .map(o -> insertOrReplace(o, identifier))
+                        .collect(Collectors.toList());
             }
 
             /**
@@ -228,11 +237,12 @@ public class MongoBase {
              * @param object     The object to gather data from.
              * @param field      The field to match.
              * @param identifier The identifier to match.
+             * @return The {@link UpdateResult} from the database.
              */
-            public void updateField(Object object, String field, String identifier) {
+            public UpdateResult updateField(Object object, String field, String identifier) {
                 Document document = fromObject(object);
 
-                collection.updateOne(Filters.eq(identifier, document.get(identifier)), Updates.set(field, document.get(field)));
+                return collection.updateOne(Filters.eq(identifier, document.get(identifier)), Updates.set(field, document.get(field)));
             }
 
             /**
@@ -241,11 +251,12 @@ public class MongoBase {
              * @param object     The objects to gather data from.
              * @param fields     The field to match.
              * @param identifier The identifier to match.
+             * @return The {@link UpdateResult} from the database.
              */
-            public void updateFields(Object object, List<String> fields, String identifier) {
+            public UpdateResult updateFields(Object object, List<String> fields, String identifier) {
                 Document document = fromObject(object);
 
-                collection.updateOne(Filters.eq(identifier, document.get(identifier)), Updates
+                return collection.updateOne(Filters.eq(identifier, document.get(identifier)), Updates
                         .combine(fields.stream().map(s -> Updates.set(s, document.get(s))).toArray(Bson[]::new)));
             }
 
@@ -253,18 +264,20 @@ public class MongoBase {
              * Inserts an object to the database.
              *
              * @param object The object to insert.
+             * @return The {@link InsertOneResult} from the database.
              */
-            public void insert(Object object) {
-                collection.insertOne(fromObject(object));
+            public InsertOneResult insert(Object object) {
+                return collection.insertOne(fromObject(object));
             }
 
             /**
              * Deletes many documents that matches the filter.
              *
              * @param filters The filters to match.
+             * @return The {@link com.mongodb.client.result.DeleteResult} from the database.
              */
-            public void deleteMany(Bson... filters) {
-                collection.deleteMany(Filters.and(filters));
+            public DeleteResult deleteMany(Bson... filters) {
+                return collection.deleteMany(Filters.and(filters));
             }
 
             /**
@@ -272,9 +285,10 @@ public class MongoBase {
              *
              * @param identifier The identifier to match.
              * @param value      The value required for a document to qualify in deletion.
+             * @return The {@link com.mongodb.client.result.DeleteResult} from the database.
              */
-            public void deleteMany(String identifier, Object value) {
-                collection.deleteMany(Filters.eq(identifier, value));
+            public DeleteResult deleteMany(String identifier, Object value) {
+                return collection.deleteMany(Filters.eq(identifier, value));
             }
 
             /**
@@ -298,9 +312,10 @@ public class MongoBase {
              * Deletes one document that matches the filters.
              *
              * @param filters The filters to match.
+             * @return The {@link com.mongodb.client.result.DeleteResult} from the database.
              */
-            public void deleteOne(Bson... filters) {
-                collection.deleteOne(Filters.and(filters));
+            public DeleteResult deleteOne(Bson... filters) {
+                return collection.deleteOne(Filters.and(filters));
             }
 
             /**
@@ -309,8 +324,8 @@ public class MongoBase {
              * @param identifier The identifier to match.
              * @param value      The value required for a document to qualify in deletion.
              */
-            public void deleteOne(String identifier, Object value) {
-                collection.deleteOne(Filters.eq(identifier, value));
+            public DeleteResult deleteOne(String identifier, Object value) {
+                return collection.deleteOne(Filters.eq(identifier, value));
             }
 
             /**
