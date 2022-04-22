@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 
 public class MongoBase {
 
-    private final MongoClient client;
+    public final MongoClient client;
 
     /**
      * Creates a new MongoBase with customized settings.
